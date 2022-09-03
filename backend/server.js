@@ -289,7 +289,8 @@ app.get('/get-interest/:id', async (req,res)=>{
     try{
         const userID = req.params.id;
         let currentBalance = (await pool.query("SELECT balance FROM users WHERE users_id = ?",[userID]))[0].balance
-        let moneyinterest = (INTEREST*currentBalance).toFixed(2)
+        //INTEREST is percent 
+        let moneyinterest = ((INTEREST*0.01)*currentBalance).toFixed(2)
         return res.status(200).json({interestPercent:INTEREST,interest:moneyinterest})
     }catch(err){
         console.log(err)

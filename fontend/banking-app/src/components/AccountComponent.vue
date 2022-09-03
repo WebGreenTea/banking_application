@@ -2,7 +2,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark justify-content-between flex-nowrap flex-row">
     <div class="container">
        <a class="navbar-brand float-left" href="/account" >{{userData.first_name}} {{userData.last_name}}</a>
-      <div class="collapse navbar-collapse topnav-right" >
+      <div class="topnav-right" >
         
         <ul class="nav navbar-nav ms-auto">
           <li class="nav-item">
@@ -25,7 +25,7 @@
                         <h1>{{ formatToCurrency(userData.balance) }}</h1>
                     </div>
                     <div class="mt-2" v-if="haveInterestData()">
-                        <p>interest they will be earned at the end of the year {{this.interestPercent}}% ({{ this.interest }} ฿)</p> 
+                        <p>interest you will be earned at the end of the year {{this.interestPercent}}% ({{ this.interest }} ฿)</p> 
                     </div>
                     
                 </div>
