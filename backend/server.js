@@ -255,15 +255,20 @@ app.post('/transfer', async (req,res)=>{
             return res.status(400).send("Invalid recipient account number")
         }
 
+        //tranfer
         pool.query(`UPDATE users SET balance = CASE account_number WHEN '${accountNumber}' THEN balance - ${amount} WHEN '${recipientNumber}' THEN balance + ${amount} ELSE balance END WHERE account_number IN('${accountNumber}', '${haveRecipient}')`,async (err,result,fields)=>{
             if(err){
                 console.log(err)
                 return res.status(400).send();
             }
 
+            //get new balance of sender
             let newBalance = (await pool.query("SELECT balance FROM users WHERE users_id = ?",[userID]))[0].balance
             let date = new Date().toISOString().slice(0, 19).replace('T', ' ');
+            //update history of sender
             await pool.query("INSERT INTO transaction(users_id,date_time,transaction_amount,action,recipient) VALUE(?,?,?,?,?)",[userID,date,amount,'transfer',recipientID])
+            //update history of receive
+            await pool.query("INSERT INTO transaction(users_id,date_time,transaction_amount,action,sender) VALUE(?,?,?,?,?)",[recipientID,date,amount,'receive',userID])
             return res.status(200).json({message:"transfer successfully",balance:newBalance})
 
         })
@@ -288,17 +293,34 @@ app.get('/get-interest/:id', async (req,res)=>{
 app.get('/history/:id', async (req,res)=>{
     try{
         const userID = req.params.id;
-        pool.query("SELECT (transaction.date_time),(transaction.transaction_amount),(transaction.action),(users.first_name),(users.last_name),(users.account_number) FROM transaction  LEFT JOIN users ON transaction.recipient=users.users_id WHERE transaction.users_id = ?",[userID],(err,result,fields) =>{
+        pool.query("SELECT (transaction.date_time),(transaction.transaction_amount),(transaction.action),(users.first_name),(users.last_name),(users.account_number) FROM transaction  LEFT JOIN users ON transaction.recipient=users.users_id OR transaction.sender=users.users_id WHERE transaction.users_id = ?",[userID],(err,result,fields) =>{
             if(err){
                 console.log(err)
                 return res.status(400).send();
             }
 
+            finalResult = []
             for(let i =0;i<result.length;i++){
-                result[i].date_time = result[i].date_time.toUTCString()
-            }
+                //result[i].date_time = result[i].date_time.toUTCString()
+                let recipient = null
+                let sender = null
+                if(result[i].action == 'transfer'){
+                    recipient = `${result[i].first_name} ${result[i].last_name} (${result[i].account_number})`
+                }
+                if(result[i].action == 'receive'){
+                    sender = `${result[i].first_name} ${result[i].last_name} (${result[i].account_number})`
+                }
+                finalResult.push({
+                    date_time:result[i].date_time.toUTCString(),
+                    transaction_amount:result[i].transaction_amount,
+                    action:result[i].action,
+                    recipient:recipient,
+                    sender:sender
+                })
 
-            return res.status(200).json(result)
+            }
+            //console.log(finalResult)
+            return res.status(200).json(finalResult)
         })
     }catch(err){
 

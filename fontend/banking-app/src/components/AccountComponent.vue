@@ -100,7 +100,10 @@ export default {
             this.$router.push("/");
         },
         formatToCurrency(amount){
-            return ((amount).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'))+" ฿"; 
+            if(amount){
+                return ((amount).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'))+" ฿"; 
+            }
+            
         },
         showDeposit(){
             this.deposit = true

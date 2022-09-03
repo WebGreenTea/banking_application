@@ -36,11 +36,11 @@ export default {
             axios.post(apiurl,{userID:this.userID,amount:this.amount}).then((res)=>{
                 
                 this.$emit('update-amount',res.data.balance)
-                console.log(res.data.message)
+                //console.log(res.data.message)
                 alert(res.data.message)
                 this.amount=''
             }).catch(err =>{
-                console.log(err.response.data)
+                alert(err.response.data)
             })
         }
     }
