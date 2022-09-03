@@ -43,6 +43,7 @@ export default {
                 //console.log(res.data.message)
                 alert(res.data.message)
                 this.amount=''
+                this.recipientNumber=''
             }).catch(err =>{
                 alert(err.response.data)
             })

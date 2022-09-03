@@ -100,7 +100,7 @@ export default {
             this.$router.push("/");
         },
         formatToCurrency(amount){
-            if(amount){
+            if(amount != null){
                 return ((amount).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'))+" ฿"; 
             }
             
@@ -152,8 +152,8 @@ export default {
         const logindata = await checklogin();
 
         if (!logindata.login) {
-            window.location.href = 'login';
-            
+            //window.location.href = 'login';
+            this.$router.push({path:'/login'})
         }else{
             let userid = logindata.id
             let apiUrl = `${ApiUrl}/getuserdata/${userid}`;

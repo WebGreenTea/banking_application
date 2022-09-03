@@ -5,9 +5,9 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const cors = require('cors')
 const app = express();
+const pool = require('./database')
 require('dotenv').config()
 
-const pool = require('./database')
 const JWT_KEY = process.env.JWT_KEY
 const INTEREST = parseFloat(process.env.INTEREST)
 
@@ -70,6 +70,7 @@ app.post('/register',async (req,res) =>  {
 
     }catch(err){
         console.log(err)
+        return res.status(400).send()
     }
 })
 
@@ -96,6 +97,7 @@ app.post('/login',async (req,res) =>{
 
     }catch(err){
         console.log(err)
+        return res.status(400).send()
     }
 })
 
@@ -137,6 +139,7 @@ app.get('/getuserdata/:id', async (req,res) =>{
 
     }catch(err){
         console.log(err)
+        return res.status(400).send()
     }
 })
 
@@ -172,6 +175,7 @@ app.post('/deposit', async (req,res)=>{
 
     }catch(err){
         console.log(err)
+        return res.status(400).send()
     }
 })
 
@@ -213,6 +217,7 @@ app.post('/withdraw', async (req,res)=>{
 
     }catch(err){
         console.log(err)
+        return res.status(400).send()
     }
 })
 
@@ -275,6 +280,7 @@ app.post('/transfer', async (req,res)=>{
 
     }catch(err){
         console.log(err)
+        return res.status(400).send()
     }
 })
 
@@ -287,6 +293,7 @@ app.get('/get-interest/:id', async (req,res)=>{
         return res.status(200).json({interestPercent:INTEREST,interest:moneyinterest})
     }catch(err){
         console.log(err)
+        return res.status(400).send()
     }
 })
 
@@ -323,7 +330,8 @@ app.get('/history/:id', async (req,res)=>{
             return res.status(200).json(finalResult)
         })
     }catch(err){
-
+        console.log(err)
+        return res.status(400).send()
     }
 })
 

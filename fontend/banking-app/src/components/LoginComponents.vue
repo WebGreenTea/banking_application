@@ -53,8 +53,8 @@ export default {
     let token = localStorage.getItem("token");
     if (token) {
       //alert('don\'t have token')
-      //this.$router.push("/account");
-      window.location.href = 'account';
+      this.$router.push("/account");
+      //window.location.href = 'account';
     }
   },
 }
